@@ -6,10 +6,10 @@ const Navbar = (props) => {
       <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
         <a className='navbar-brand' href='#'>
           <img
-            src='%PUBLIC_URL%/logo192.png'
+            src='logo192.png'
             width='30'
             height='30'
-            className='d-inline-block align-top'
+            className='d-inline-block align-top mr-2'
             alt=''
           />
           React Learning
