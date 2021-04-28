@@ -1,9 +1,13 @@
 import React from 'react';
 
 const LoginForm = (props) => {
+  const submitHandler = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <>
-      <form>
+      <form onSubmit={submitHandler}>
         <div className='form-group'>
           <label for='exampleInputEmail1'>Email address</label>
           <input
