@@ -1,17 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const LoginForm = (props) => {
-  const [email, setEmail] = useState('default');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [checkMeOut, setCheckMeOut] = useState(false);
+
+  const emailRegEx = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const passwordRegEx = /\w{8,16}/;
+
+  const [emailValidationError, setEmailValidationError] = useState(
+    'Email is empty'
+  );
+  const [passwordValidationError, setPasswordValidationError] = useState(
+    'Password is empty'
+  );
+
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
 
   const submitHandler = (e) => {
     e.preventDefault();
 
-    console.log('Email', email);
+    validateForm();
+
+    if (emailValidationError || passwordValidationError) {
+      console.log(emailValidationError, passwordValidationError);
+      alert('Cannot submit invalid or empty form');
+      return;
+    } else {
+      const formData = {
+        email,
+        password,
+        checkMeOut,
+      };
+
+      console.log('Form submit', formData);
+    }
   };
 
-  const emailChangeHandler = (e) => {
-    setEmail(e.target.value);
+  useEffect(() => {
+    validateForm();
+  });
+
+  const validateForm = () => {
+    if (emailRegEx.test(email)) {
+      setEmailValidationError(null);
+    } else {
+      setEmailValidationError('Email is invalid');
+    }
+
+    if (passwordRegEx.test(password)) {
+      setPasswordValidationError(null);
+    } else {
+      setPasswordValidationError('Invalid password (8-16 characters)');
+    }
   };
+
+  const inputHandler = (e) => {
+    switch (e.target.name) {
+      case 'email':
+        setEmail(e.target.value);
+        setEmailTouched(true);
+        break;
+      case 'password':
+        setPassword(e.target.value);
+        setPasswordTouched(true);
+        break;
+      case 'checkMeOut':
+        setCheckMeOut(e.target.checked);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const focusHandler = (e) => {};
 
   return (
     <>
@@ -23,12 +86,16 @@ const LoginForm = (props) => {
             className='form-control'
             id='exampleInputEmail1'
             aria-describedby='emailHelp'
-            onChange={emailChangeHandler}
+            onChange={inputHandler}
+            onFocus={focusHandler}
             value={email}
+            name='email'
           />
-          <small id='emailHelp' className='form-text text-muted'>
-            We'll never share your email with anyone else.
-          </small>
+          {emailTouched && (
+            <small className='form-text text-danger'>
+              {emailValidationError}
+            </small>
+          )}
         </div>
         <div className='form-group'>
           <label for='exampleInputPassword1'>Password</label>
@@ -36,13 +103,23 @@ const LoginForm = (props) => {
             type='password'
             className='form-control'
             id='exampleInputPassword1'
+            name='password'
+            onChange={inputHandler}
+            onFocus={focusHandler}
           />
+          {passwordTouched && (
+            <small className='form-text text-danger'>
+              {passwordValidationError}
+            </small>
+          )}
         </div>
         <div className='form-group form-check'>
           <input
             type='checkbox'
             className='form-check-input'
             id='exampleCheck1'
+            name='checkMeOut'
+            onChange={inputHandler}
           />
           <label className='form-check-label' for='exampleCheck1'>
             Check me out
